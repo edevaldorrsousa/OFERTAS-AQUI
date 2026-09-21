@@ -1,64 +1,122 @@
-import React, { useState, useEffect } from 'react';
-import PublicarOferta from './PublicarOferta';
+import { useState } from 'react'
+import heroImg from './assets/hero.png'
+import reactLogo from './assets/react.svg'
+import viteLogo from './assets/vite.svg'
+import './App.css'
 
-export default function App() {
-  const [produtos, setProdutos] = useState([]);
-  const [carregando, setCarregando] = useState(true);
-
-  // URL do backend no Render (com fallback direto)
-  const API_URL = import.meta.env.VITE_API_URL || 'https://ofertas-backend-chge.onrender.com';
-
-  // Função para buscar os produtos no servidor na nuvem
-  const buscarProdutosDoBanco = async () => {
-    try {
-      setCarregando(true);
-      const resposta = await fetch(`${API_URL}/produtos`);
-      
-      if (resposta.ok) {
-        const dados = await resposta.json();
-        setProdutos(dados);
-      } else {
-        console.error("Erro na resposta do servidor:", resposta.status);
-      }
-    } catch (erro) {
-      console.error("Erro ao conectar à API do Render:", erro);
-    } finally {
-      setCarregando(false);
-    }
-  };
-
-  // Carrega os produtos assim que a página é aberta
-  useEffect(() => {
-    buscarProdutosDoBanco();
-  }, []);
+function App() {
+  const [count, setCount] = useState(0)
 
   return (
-    <div className="app-container">
-      {/* Passa a função para recarregar a lista quando uma nova oferta for publicada */}
-      <PublicarOferta recarregarProdutos={buscarProdutosDoBanco} />
+    <>
+      <section id="center">
+        <div className="hero">
+          <img src={heroImg} className="base" width="170" height="179" alt="" />
+          <img src={reactLogo} className="framework" alt="React logo" />
+          <img src={viteLogo} className="vite" alt="Vite logo" />
+        </div>
+        <div>
+          <h1>Get started</h1>
+          <p>
+            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
+          </p>
+        </div>
+        <button
+          type="button"
+          className="counter"
+          onClick={() => setCount((count) => count + 1)}
+        >
+          Count is {count}
+        </button>
+      </section>
 
-      <main className="conteudo-principal">
-        <h2>Ofertas em Destaque</h2>
+      <div className="ticks"></div>
 
-        {carregando ? (
-          <p>A carregar ofertas da nuvem...</p>
-        ) : produtos.length === 0 ? (
-          <p>Nenhuma oferta encontrada no banco de dados.</p>
-        ) : (
-          <div className="produtos-grid">
-            {produtos.map((prod, index) => (
-              <div key={prod.id || prod._id || index} className="card-produto">
-                {prod.imagemUrl && (
-                  <img src={prod.imagemUrl} alt={prod.nome} className="imagem-produto" />
-                )}
-                <h3>{prod.nome}</h3>
-                <p className="preco">R$ {prod.preco}</p>
-                {prod.cidade && <p className="cidade">📍 {prod.cidade}</p>}
-              </div>
-            ))}
-          </div>
-        )}
-      </main>
-    </div>
-  );
+      <section id="next-steps">
+        <div id="docs">
+          <svg className="icon" role="presentation" aria-hidden="true">
+            <use href="/icons.svg#documentation-icon"></use>
+          </svg>
+          <h2>Documentation</h2>
+          <p>Your questions, answered</p>
+          <ul>
+            <li>
+              <a href="https://vite.dev/" target="_blank">
+                <img className="logo" src={viteLogo} alt="" />
+                Explore Vite
+              </a>
+            </li>
+            <li>
+              <a href="https://react.dev/" target="_blank">
+                <img className="button-icon" src={reactLogo} alt="" />
+                Learn more
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div id="social">
+          <svg className="icon" role="presentation" aria-hidden="true">
+            <use href="/icons.svg#social-icon"></use>
+          </svg>
+          <h2>Connect with us</h2>
+          <p>Join the Vite community</p>
+          <ul>
+            <li>
+              <a href="https://github.com/vitejs/vite" target="_blank">
+                <svg
+                  className="button-icon"
+                  role="presentation"
+                  aria-hidden="true"
+                >
+                  <use href="/icons.svg#github-icon"></use>
+                </svg>
+                GitHub
+              </a>
+            </li>
+            <li>
+              <a href="https://chat.vite.dev/" target="_blank">
+                <svg
+                  className="button-icon"
+                  role="presentation"
+                  aria-hidden="true"
+                >
+                  <use href="/icons.svg#discord-icon"></use>
+                </svg>
+                Discord
+              </a>
+            </li>
+            <li>
+              <a href="https://x.com/vite_js" target="_blank">
+                <svg
+                  className="button-icon"
+                  role="presentation"
+                  aria-hidden="true"
+                >
+                  <use href="/icons.svg#x-icon"></use>
+                </svg>
+                X.com
+              </a>
+            </li>
+            <li>
+              <a href="https://bsky.app/profile/vite.dev" target="_blank">
+                <svg
+                  className="button-icon"
+                  role="presentation"
+                  aria-hidden="true"
+                >
+                  <use href="/icons.svg#bluesky-icon"></use>
+                </svg>
+                Bluesky
+              </a>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <div className="ticks"></div>
+      <section id="spacer"></section>
+    </>
+  )
 }
+
+export default App
