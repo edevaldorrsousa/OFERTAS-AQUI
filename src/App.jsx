@@ -3,41 +3,49 @@ import PublicarOferta from './PublicarOferta';
 
 export default function App() {
   const [produtos, setProdutos] = useState([]);
+  const [carregando, setCarregando] = useState(true);
 
-  // Função para buscar os produtos no backend em nuvem
   const buscarProdutosDoBanco = async () => {
     try {
+      setCarregando(true);
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
       const resposta = await fetch(`${apiUrl}/produtos`);
       
       if (resposta.ok) {
         const dados = await resposta.json();
-        setProdutos(dados); // Atualiza o estado com os produtos vindos do banco
+        setProdutos(dados);
       }
     } catch (erro) {
       console.error("Erro ao buscar produtos:", erro);
+    } finally {
+      setCarregando(false);
     }
   };
 
-  // Dispara a busca assim que o site abre no navegador
   useEffect(() => {
     buscarProdutosDoBanco();
   }, []);
 
   return (
     <div>
-      {/* Passa a função para o botão de publicar recarregar a lista */}
       <PublicarOferta recarregarProdutos={buscarProdutosDoBanco} />
 
-      {/* Renderiza a lista vinda do banco */}
-      <div className="produtos-grid">
-        {produtos.map((prod) => (
-          <div key={prod.id || prod._id} className="card-produto">
-            <h3>{prod.nome}</h3>
-            <p>R$ {prod.preco}</p>
-          </div>
-        ))}
-      </div>
+      {carregando ? (
+        <p>Carregando ofertas da nuvem...</p>
+      ) : (
+        <div className="produtos-grid">
+          {produtos.length === 0 ? (
+            <p>Nenhuma oferta encontrada no banco de dados.</p>
+          ) : (
+            produtos.map((prod, index) => (
+              <div key={prod.id || index} className="card-produto">
+                <h3>{prod.nome}</h3>
+                <p>R$ {prod.preco}</p>
+              </div>
+            ))
+          )}
+        </div>
+      )}
     </div>
   );
 }
